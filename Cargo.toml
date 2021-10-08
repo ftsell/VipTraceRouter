@@ -1,8 +1,17 @@
 [package]
-name = "TraceRouteExtender"
+name = "trace_route_extender"
 version = "0.1.0"
 edition = "2018"
+authors = ["Finn-Thorben Sell <dev@finn-thorben.me>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+tokio = { version = "1.12", features = ["full"] }
+#tokio-tun = "0.3.16"
+tokio-tun = { path = "/home/ftsell/Projects/tokio-tun" }
+log = "0.4.14"
+simplelog = "0.10.2"
+get_if_addrs = "0.5.3"
+clap = "2.33"
+pdu = "1.4"
