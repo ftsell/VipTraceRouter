@@ -1,4 +1,4 @@
-use log::{trace, LevelFilter};
+use log::trace;
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 /// reverse of `Ipv4Addr::from(<u32>)`

@@ -21,7 +21,6 @@ pub async fn create_tun_devices(
     for (i, network) in networks.iter().enumerate() {
         match network {
             IpAddr::V4(network) => {
-                let netmask = Ipv4Addr::new(255, 255, 255, 0);
                 let tun = create_ipv4_tun_device(
                     &format!("{}{}", base_name, i),
                     ip_addrs::get_nth_address_in_network4(1, netmask_size, &network),
