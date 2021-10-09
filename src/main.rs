@@ -4,6 +4,8 @@
 use crate::argparse::Arguments;
 use log::{debug, info, trace, warn, LevelFilter};
 use simplelog::{ColorChoice, Config, TermLogger, TerminalMode};
+use std::fs::File;
+use std::io::Write;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::task::JoinHandle;
 use tokio_tun::Tun;
