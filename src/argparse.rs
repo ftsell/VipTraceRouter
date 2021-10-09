@@ -12,7 +12,7 @@ pub struct Arguments {
 }
 
 pub fn parse_arguments() -> Arguments {
-    let matches = App::new("TraceRouteExtender")
+    let matches = App::new("VipTraceRouter")
         .version(env!("CARGO_PKG_VERSION"))
         .about(
             "Adds additional ip addresses when tracerouting the host where this app is running on",
@@ -30,7 +30,7 @@ pub fn parse_arguments() -> Arguments {
                 .short("i")
                 .long("iface")
                 .help("Name of the created TUN interface")
-                .default_value("tunTraceRtExt")
+                .default_value("tunVipTrcRt")
                 .takes_value(true)
                 .required(true),
         )

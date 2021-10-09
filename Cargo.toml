@@ -1,5 +1,5 @@
 [package]
-name = "trace_route_extender"
+name = "vip_tracerouter"
 version = "0.1.0"
 edition = "2021"
 authors = ["Finn-Thorben Sell <dev@finn-thorben.me>"]

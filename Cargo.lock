@@ -584,18 +584,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "trace_route_extender"
-version = "0.1.0"
-dependencies = [
- "clap",
- "log",
- "pnet_packet",
- "simplelog",
- "tokio",
- "tokio-tun",
-]
-
-[[package]]
 name = "unicode-width"
 version = "0.1.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -612,6 +600,18 @@ name = "vec_map"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f1bddf1187be692e79c5ffeab891132dfb0f236ed36a43c7ed39f1165ee20191"
+
+[[package]]
+name = "vip_tracerouter"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "log",
+ "pnet_packet",
+ "simplelog",
+ "tokio",
+ "tokio-tun",
+]
 
 [[package]]
 name = "wasi"
