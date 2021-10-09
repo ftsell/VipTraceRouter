@@ -1,4 +1,7 @@
 use log::{debug, trace};
+use pnet_packet::icmp::destination_unreachable::{
+    DestinationUnreachable, MutableDestinationUnreachablePacket,
+};
 use pnet_packet::icmp::time_exceeded::{MutableTimeExceededPacket, TimeExceeded};
 use pnet_packet::icmp::{checksum, Icmp, IcmpCode, IcmpPacket, IcmpTypes, MutableIcmpPacket};
 use pnet_packet::ipv4::Ipv4Packet;
@@ -69,9 +72,34 @@ pub fn build_icmp_time_exceeded_response(original_ip_packet: &Ipv4Packet) -> Vec
         unused: 0,
         payload: original_ip_packet.packet().to_vec(),
     });
-    packet.set_checksum(checksum(
-        &IcmpPacket::new(packet.to_immutable().packet()).unwrap(),
-    ));
+    packet.set_checksum(checksum(&IcmpPacket::new(packet.packet()).unwrap()));
+
+    result
+}
+
+/// Build an *ICMP destination unreachable* packet.
+///
+/// The *destination unreachable* packets should be generated when a higher level protocol cannot
+/// be delivered. It also includes the failed original packet which can be provided via
+/// `original_ip_packet`.
+pub fn build_icmp_destination_unreachable_response(original_ip_packet: &Ipv4Packet) -> Vec<u8> {
+    let mut result = vec![
+        0;
+        MutableDestinationUnreachablePacket::minimum_packet_size()
+            + original_ip_packet.packet_size()
+    ];
+
+    let mut packet = MutableDestinationUnreachablePacket::new(&mut result).expect(
+        "Could not build view into buffer to construct destination unreachable ICMP packet",
+    );
+    packet.populate(&DestinationUnreachable {
+        icmp_type: IcmpTypes::DestinationUnreachable,
+        icmp_code: IcmpCode(3),
+        checksum: 0,
+        unused: 0,
+        payload: original_ip_packet.packet().to_vec(),
+    });
+    packet.set_checksum(checksum(&IcmpPacket::new(packet.packet()).unwrap()));
 
     result
 }
