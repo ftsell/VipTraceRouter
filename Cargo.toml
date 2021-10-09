@@ -6,6 +6,10 @@ authors = ["Finn-Thorben Sell <dev@finn-thorben.me>"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[profile.release]
+opt-level = 3
+lto = true
+
 [dependencies]
 tokio = { version = "1.12", features = ["full"] }
 #tokio-tun = "0.3.16"
