@@ -33,6 +33,9 @@ async fn main() {
         .collect();
     info!("Now Listening for incoming packets");
 
+    #[cfg(feature = "systemd")]
+    let _ = systemd::daemon::notify(true, (&[(systemd::daemon::STATE_READY, "1")]).iter());
+
     for handle in handles {
         let _ = tokio::join!(handle);
     }

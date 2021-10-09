@@ -12,9 +12,9 @@ lto = true
 
 [dependencies]
 tokio = { version = "1.12", features = ["full"] }
-#tokio-tun = "0.3.16"
 tokio-tun = { git = "https://github.com/ftsell/tokio-tun.git", branch = "feature/ipv6_support" }
 log = "0.4.14"
 simplelog = "0.10.2"
+systemd = { version = "0.9.0", optional = true }
 clap = "2.33"
 pnet_packet = "0.28.0"
