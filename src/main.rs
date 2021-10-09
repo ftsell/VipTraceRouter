@@ -1,9 +1,11 @@
 #![feature(ip)]
 #![feature(async_closure)]
 
-use log::{debug, info, LevelFilter};
+use log::{debug, info, warn, LevelFilter};
 use simplelog::{ColorChoice, Config, TermLogger, TerminalMode};
-use tokio::io::AsyncReadExt;
+use std::fs::File;
+use std::io::Write;
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::task::JoinHandle;
 use tokio_tun::Tun;
 
@@ -51,6 +53,22 @@ async fn loop_for_tun_device(mut tun: Tun) {
             .read(&mut buf)
             .await
             .expect("Could not read from TUN device");
-        packets::handle_packet(&buf[..n]);
+        match packets::handle(&buf[..n]) {
+            None => {}
+            Some(response) => match tun.write(&response).await {
+                Err(e) => {
+                    warn!("Could not write response [error={}]", e);
+                }
+                Ok(n_bytes) => {
+                    debug!("Wrote response [n_bytes={}]", n_bytes);
+
+                    let mut f_in = File::create("/home/ftsell/input.bin").unwrap();
+                    f_in.write_all(&buf[..64 + 32]).unwrap();
+
+                    let mut f_out = File::create("/home/ftsell/output.bin").unwrap();
+                    f_out.write_all(&response).unwrap();
+                }
+            },
+        }
     }
 }
