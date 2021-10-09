@@ -53,10 +53,15 @@ pub fn handle_ipv4_packet(program_args: &Arguments, packet: &Ipv4Packet) -> Opti
                 }
             }
         }
-        // if we receive UDP packet, we send an ICMP destination unreachable response to indicate
-        // that the port is closed
-        else if packet.get_next_level_protocol() == IpNextHeaderProtocols::Udp {
-            debug!("Received UDP packet. Responding with destination unreachable");
+        // if we receive a UDP or TCP packet, we send an ICMP destination unreachable response
+        // to indicate that the port is closed
+        else if packet.get_next_level_protocol() == IpNextHeaderProtocols::Udp
+            || packet.get_next_level_protocol() == IpNextHeaderProtocols::Tcp
+        {
+            debug!(
+                "Received {} packet. Responding with destination unreachable",
+                packet.get_next_level_protocol()
+            );
             Some(build_ipv4_response(
                 packet,
                 packet.get_destination(),
