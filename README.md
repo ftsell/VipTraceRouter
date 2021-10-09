@@ -25,4 +25,4 @@ traceroute to 10::5 (10::f), 30 hops max, 80 byte packets
 
 But it is quite fun.
 For example, I use it in conjunction with reverse DNS records to output my CV via traceroute.
-You can try it yourself by probing [cv6.finn-thorben.me]() (if you can route IPv6 traffic that is).
+You can try it yourself by probing [cv6.finn-thorben.me](./) (if you can route IPv6 traffic that is).
