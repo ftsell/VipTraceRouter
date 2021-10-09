@@ -9,9 +9,8 @@ authors = ["Finn-Thorben Sell <dev@finn-thorben.me>"]
 [dependencies]
 tokio = { version = "1.12", features = ["full"] }
 #tokio-tun = "0.3.16"
-tokio-tun = { path = "/home/ftsell/Projects/tokio-tun" }
+tokio-tun = { git = "https://github.com/ftsell/tokio-tun.git", branch = "feature/ipv6_support" }
 log = "0.4.14"
 simplelog = "0.10.2"
-get_if_addrs = "0.5.3"
 clap = "2.33"
 pnet_packet = "0.28.0"
