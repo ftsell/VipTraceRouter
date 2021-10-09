@@ -33,6 +33,16 @@ fn calc_netmask_from_size6(prefix_length: usize) -> Ipv6Addr {
     Ipv6Addr::from(netmask)
 }
 
+/// Calculate the size an IPv4 netmask would need to encompass the number of hosts
+pub fn calc_netmask_size_with_n_hosts4(n: usize) -> u32 {
+    32 - ((n as f64).abs() + 2.0).log2().ceil() as u32
+}
+
+/// Calculate the size an IPv6 netmask would need to encompass the number of hosts
+pub fn calc_netmask_size_with_n_hosts6(n: usize) -> u32 {
+    128 - ((n as f64).abs() + 2.0).log2().ceil() as u32
+}
+
 pub fn get_nth_address_in_network4(
     n: u32,
     netmask_size: u32,

@@ -3,7 +3,7 @@ use log::LevelFilter;
 use std::net::IpAddr;
 use std::str::FromStr;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Arguments {
     pub log_level: LevelFilter,
     pub tun_device_name: String,

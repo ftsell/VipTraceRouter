@@ -1,10 +1,9 @@
 #![feature(ip)]
 #![feature(async_closure)]
 
-use log::{debug, info, warn, LevelFilter};
+use crate::argparse::Arguments;
+use log::{debug, info, trace, warn, LevelFilter};
 use simplelog::{ColorChoice, Config, TermLogger, TerminalMode};
-use std::fs::File;
-use std::io::Write;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::task::JoinHandle;
 use tokio_tun::Tun;
@@ -27,7 +26,10 @@ async fn main() {
 
     let handles: Vec<JoinHandle<_>> = tun_devices
         .into_iter()
-        .map(|tun| tokio::spawn(async move { loop_for_tun_device(tun).await }))
+        .map(|tun| {
+            let args = args.clone();
+            tokio::spawn(async move { loop_for_tun_device(&args, tun).await })
+        })
         .collect();
     info!("Now Listening for incoming packets");
 
@@ -46,27 +48,21 @@ fn setup_logging(log_level: LevelFilter) {
     .expect("Could not setup logging");
 }
 
-async fn loop_for_tun_device(mut tun: Tun) {
+async fn loop_for_tun_device(program_args: &Arguments, mut tun: Tun) {
     loop {
         let mut buf = [0u8; 1024];
         let n = tun
             .read(&mut buf)
             .await
             .expect("Could not read from TUN device");
-        match packets::handle(&buf[..n]) {
+        match packets::handle(program_args, &buf[..n]) {
             None => {}
             Some(response) => match tun.write(&response).await {
                 Err(e) => {
                     warn!("Could not write response [error={}]", e);
                 }
                 Ok(n_bytes) => {
-                    debug!("Wrote response [n_bytes={}]", n_bytes);
-
-                    let mut f_in = File::create("/home/ftsell/input.bin").unwrap();
-                    f_in.write_all(&buf[..64 + 32]).unwrap();
-
-                    let mut f_out = File::create("/home/ftsell/output.bin").unwrap();
-                    f_out.write_all(&response).unwrap();
+                    trace!("Wrote response [n_bytes={}]", n_bytes);
                 }
             },
         }

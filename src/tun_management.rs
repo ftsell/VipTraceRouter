@@ -1,5 +1,5 @@
 use crate::ip_addrs;
-use log::{debug, trace};
+use log::debug;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use tokio_tun::{Tun, TunBuilder};
 
@@ -10,17 +10,10 @@ pub async fn create_tun_devices(
 ) -> Vec<Tun> {
     let mut result = Vec::with_capacity(networks.len());
 
-    let netmask_size = 32 - ((n_hosts as f64).abs() + 2.0).log2().ceil() as u32;
-    trace!(
-        "Calculated netmask [n_hosts={}, netmask=/{}, n_hosts_avail={}]",
-        n_hosts,
-        netmask_size,
-        2_usize.pow(32 - netmask_size) - 2
-    );
-
     for (i, network) in networks.iter().enumerate() {
         match network {
             IpAddr::V4(network) => {
+                let netmask_size = ip_addrs::calc_netmask_size_with_n_hosts4(n_hosts);
                 let tun = create_ipv4_tun_device(
                     &format!("{}{}", base_name, i),
                     ip_addrs::get_nth_address_in_network4(1, netmask_size, &network),
@@ -30,6 +23,7 @@ pub async fn create_tun_devices(
                 result.push(tun);
             }
             IpAddr::V6(network) => {
+                let netmask_size = ip_addrs::calc_netmask_size_with_n_hosts6(n_hosts);
                 let tun = create_ipv6_tun_device(
                     &format!("{}{}", base_name, i),
                     crate::ip_addrs::get_nth_address_in_network6(
@@ -48,7 +42,7 @@ pub async fn create_tun_devices(
     result
 }
 
-pub async fn create_ipv4_tun_device(
+async fn create_ipv4_tun_device(
     device_name: &str,
     device_address: Ipv4Addr,
     netmask: Ipv4Addr,
@@ -73,7 +67,7 @@ pub async fn create_ipv4_tun_device(
     }
 }
 
-pub async fn create_ipv6_tun_device(
+async fn create_ipv6_tun_device(
     device_name: &str,
     device_address: Ipv6Addr,
     prefix_length: u32,
