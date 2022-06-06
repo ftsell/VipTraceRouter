@@ -11,7 +11,7 @@ opt-level = 3
 lto = true
 
 [dependencies]
-tokio = { version = "1.12", features = ["full"] }
+tokio = { version = "1.13", features = ["full"] }
 tokio-tun = { git = "https://github.com/ftsell/tokio-tun.git", branch = "feature/ipv6_support" }
 log = "0.4.14"
 simplelog = "0.10.2"
